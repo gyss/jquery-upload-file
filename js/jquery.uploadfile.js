@@ -355,15 +355,26 @@
             var fileUploadId = "ajax-upload-id-" + (new Date().getTime());
 
             var form = $("<form method='" + s.method + "' action='" + s.url + "' enctype='" + s.enctype + "'></form>");
-            var fileInputStr = "<input type='file' id='" + fileUploadId + "' name='" + s.fileName + "' accept='" + s.acceptFiles + "'/>";
-            if(s.multiple) {
-                if(s.fileName.indexOf("[]") != s.fileName.length - 2) // if it does not endwith
-                {
-                    s.fileName += "[]";
+            var fileInput;
+
+            if (typeof s.inputFileID == 'undefined') {
+                    
+                // Original. Input tag id not defined
+                var fileInputStr = "<input type='file' id='" + fileUploadId + "' name='" + s.fileName + "' accept='" + s.acceptFiles + "'/>";
+                if(s.multiple) {
+                    if(s.fileName.indexOf("[]") != s.fileName.length - 2) // if it does not endwith
+                    {
+                        s.fileName += "[]";
+                    }
+                    fileInputStr = "<input type='file' id='" + fileUploadId + "' name='" + s.fileName + "' accept='" + s.acceptFiles + "' multiple/>";
                 }
-                fileInputStr = "<input type='file' id='" + fileUploadId + "' name='" + s.fileName + "' accept='" + s.acceptFiles + "' multiple/>";
+                fileInput = $(fileInputStr).appendTo(form);
+
+            } else {
+                // Extended version. Setup for external input tag
+                fileUploadId = s.inputFileID;
+                fileInput = jQuery("#" + s.inputFileID).appendTo(form);
             }
-            var fileInput = $(fileInputStr).appendTo(form);
 
             fileInput.change(function () {
 
